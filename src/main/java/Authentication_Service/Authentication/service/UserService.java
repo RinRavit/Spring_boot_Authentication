@@ -1,3 +1,42 @@
+// package Authentication_Service.Authentication.service;
+
+// import Authentication_Service.Authentication.entity.User;
+// import Authentication_Service.Authentication.repository.UserRepository;
+// import org.springframework.security.core.userdetails.UserDetails;
+// import org.springframework.security.core.userdetails.UserDetailsService;
+// import org.springframework.security.core.userdetails.UsernameNotFoundException;
+// import org.springframework.security.crypto.password.PasswordEncoder;
+// import org.springframework.stereotype.Service;
+// import java.util.Optional;
+
+// @Service
+// public class UserService implements UserDetailsService {
+
+//     private final UserRepository userRepository;
+//     private final PasswordEncoder passwordEncoder;
+
+//     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+//         this.userRepository = userRepository;
+//         this.passwordEncoder = passwordEncoder;
+//     }
+
+//     public User registerUser(User user) {
+//         user.setPassword(passwordEncoder.encode(user.getPassword()));
+//         return userRepository.save(user);
+//     }
+
+//     @Override
+//     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//         Optional<User> user = userRepository.findByUsername(username);
+//         return user.map(u -> org.springframework.security.core.userdetails.User
+//                 .withUsername(u.getUsername())
+//                 .password(u.getPassword())
+//                 .roles("USER")
+//                 .build())
+//                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+//     }
+// }
+
 package Authentication_Service.Authentication.service;
 
 import Authentication_Service.Authentication.entity.User;
@@ -7,6 +46,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.Optional;
 
 @Service
@@ -20,19 +60,42 @@ public class UserService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User registerUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    /**
+     * Load user by username for authentication purposes.
+     *
+     * @param username the username to look up
+     * @return UserDetails object containing user information
+     * @throws UsernameNotFoundException if the user is not found
+     */
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .authorities(user.getRoles().stream().map(role -> "ROLE_" + role.getName()).toArray(String[]::new))
+                .build();
+    }
+
+    /**
+     * Save a new user to the database.
+     *
+     * @param user the user to save
+     * @return the saved user
+     */
+    public User saveUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword())); // Encrypt the password
         return userRepository.save(user);
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByUsername(username);
-        return user.map(u -> org.springframework.security.core.userdetails.User
-                .withUsername(u.getUsername())
-                .password(u.getPassword())
-                .roles("USER")
-                .build())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    /**
+     * Find a user by username.
+     *
+     * @param username the username to look up
+     * @return the user, if found
+     */
+    public Optional<User> findUserByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 }
