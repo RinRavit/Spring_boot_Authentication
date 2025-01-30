@@ -6,6 +6,7 @@ import Authentication_Service.Authentication.repository.PermissionRepository;
 import Authentication_Service.Authentication.repository.RoleRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
 import java.util.Set;
 
 @Component
@@ -34,11 +35,11 @@ public class DataSeeder implements CommandLineRunner {
 
             // Create roles
             Role adminRole = new Role();
-            adminRole.setName("ROLE_ADMIN");
+            adminRole.setName("ADMIN");
             adminRole.setPermissions(Set.of(readPermission, writePermission));
 
             Role userRole = new Role();
-            userRole.setName("ROLE_USER");
+            userRole.setName("USER");
             userRole.setPermissions(Set.of(readPermission));
 
             roleRepository.save(adminRole);
