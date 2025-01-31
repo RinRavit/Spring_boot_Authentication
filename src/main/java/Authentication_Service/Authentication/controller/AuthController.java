@@ -20,9 +20,25 @@ public class AuthController {
         return ResponseEntity.ok(authService.registerUser(user));
     }
 
+    // @PostMapping("/login")
+    // public ResponseEntity<?> login(@RequestBody User user) {
+    //     String token = authService.login(user.getUsername(), user.getPassword());
+    //     return token != null ? ResponseEntity.ok("Bearer " + token) : ResponseEntity.status(401).body("Invalid credentials");
+    // }
+    // @PostMapping("/login")
+    // public ResponseEntity<?> login(@RequestBody User user) {
+    //     String token = authService.login(user.getUsername(), user.getPassword());
+    //     if (token != null) {
+    //         return ResponseEntity.ok("Bearer" + token); // Return the JWT if successful
+    //     }
+    //     return ResponseEntity.status(401).body("Invalid credentials"); // Return 401 if authentication fails
+    // }
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
         String token = authService.login(user.getUsername(), user.getPassword());
-        return token != null ? ResponseEntity.ok("Bearer " + token) : ResponseEntity.status(401).body("Invalid credentials");
+        if (token != null) {
+            return ResponseEntity.ok("Bearer" + token); // Return the JWT if successful
+        }
+        return ResponseEntity.status(401).body("Invalid credentials"); // Return 401 if authentication fails
     }
 }
