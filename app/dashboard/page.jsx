@@ -2,63 +2,33 @@
 
 import { useEffect, useState } from "react";
 import API from "../utils/api";
-import React from "react";
 import { Pencil, Plus, Trash2, UserPlus } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 
 const CourseManagement = () => {
   const router = useRouter();
-  const [currentUser, setCurrentUser] = useState({
-    id: 1,
-    role: "SUPER_ADMIN",
-    assignedCourseId: null,
-  });
-
+  const [currentUser, setCurrentUser] = useState(null); // Logged-in User
   const [courses, setCourses] = useState([]);
   const [error, setError] = useState("");
   const [users, setUsers] = useState([]);
   const [newCourseTitle, setNewCourseTitle] = useState("");
-  const [courseToDelete, setCourseToDelete] = useState(null);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [showAddDialog, setShowAddDialog] = useState(false);
 
-  // Fetch Users (Admin Access Required)
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchUserAndData = async () => {
       try {
-        const response = await API.get("/admin/users"); // Admin API call
-        setUsers(response.data);
+        const userResponse = await API.get("/auth/me"); // Fetch Logged-in User
+        setCurrentUser(userResponse.data);
+
+        const coursesResponse = await API.get("/courses"); // Fetch Courses
+        setCourses(coursesResponse.data);
+
+        const usersResponse = await API.get("/users"); // Fetch Users
+        setUsers(usersResponse.data);
       } catch (err) {
-        setError("You are not authorized to view this page.");
+        setError("Failed to load data.");
       }
     };
-    fetchData();
-  }, []);
-
-  // Fetch Courses (Simulating backend response)
-  useEffect(() => {
-    setCourses([
-      {
-        id: 1,
-        title: "Course 1",
-        adminId: 2,
-        assignedUsers: [1, 2, 3],
-        description: "Course description here",
-      },
-    ]);
+    fetchUserAndData();
   }, []);
 
   const handleLogout = () => {
@@ -66,167 +36,155 @@ const CourseManagement = () => {
     router.push("/login");
   };
 
-  const handleAddCourse = () => {
+  const handleAddCourse = async () => {
     if (!newCourseTitle.trim()) {
       alert("Please enter a course name");
       return;
     }
     const newCourse = {
-      id: courses.length + 1,
       title: newCourseTitle.trim(),
-      adminId: null,
+      adminId: null, // No Admin assigned yet
       assignedUsers: [],
-      description: "New course description",
     };
-    setCourses([...courses, newCourse]);
-    setNewCourseTitle("");
-    setShowAddDialog(false);
-  };
 
-  const handleDeleteConfirm = () => {
-    if (courseToDelete) {
-      setCourses(courses.filter((course) => course.id !== courseToDelete.id));
-      setShowDeleteDialog(false);
-      setCourseToDelete(null);
+    try {
+      const response = await API.post("/courses", newCourse);
+      setCourses([...courses, response.data]);
+      setNewCourseTitle("");
+    } catch (err) {
+      alert("Error adding course");
     }
   };
 
-  const initiateDelete = (course) => {
-    setCourseToDelete(course);
-    setShowDeleteDialog(true);
+  const handleDeleteCourse = async (id) => {
+    try {
+      await API.delete(`/courses/${id}`);
+      setCourses(courses.filter((course) => course.id !== id));
+    } catch (err) {
+      alert("Error deleting course");
+    }
+  };
+
+  const assignAdminToCourse = async (courseId, adminId) => {
+    try {
+      await API.put(`/courses/${courseId}/assign-admin`, { adminId });
+      setCourses(
+        courses.map((course) =>
+          course.id === courseId ? { ...course, adminId } : course
+        )
+      );
+    } catch (err) {
+      alert("Error assigning admin");
+    }
+  };
+
+  const assignUserToCourse = async (courseId, userId) => {
+    try {
+      await API.put(`/courses/${courseId}/assign-user`, { userId });
+      setCourses(
+        courses.map((course) =>
+          course.id === courseId
+            ? { ...course, assignedUsers: [...course.assignedUsers, userId] }
+            : course
+        )
+      );
+    } catch (err) {
+      alert("Error assigning user");
+    }
   };
 
   const getVisibleCourses = () => {
+    if (!currentUser) return [];
+
     switch (currentUser.role) {
       case "SUPER_ADMIN":
-        return courses;
+        return courses; // See all courses
       case "ADMIN":
-        return courses.filter((course) => course.adminId === currentUser.id);
+        return courses.filter((course) => course.adminId === currentUser.id); // See only assigned course
       case "USER":
-        return courses.filter((course) =>
-          course.assignedUsers.includes(currentUser.id)
-        );
+        return courses.filter((course) => course.assignedUsers.includes(currentUser.id)); // See only enrolled courses
       default:
         return [];
     }
   };
 
   return (
-    <div className="p-6 min-h-screen bg-gray-200">
+    <div className="p-6 min-h-screen bg-gray-900 text-white">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-xl font-semibold">Course Management System</h1>
-          <p className="text-sm text-gray-600">Logged in as: {currentUser.role}</p>
+          <h1 className="text-2xl font-semibold">Course Management</h1>
+          <p className="text-sm text-gray-400">Logged in as: {currentUser?.role}</p>
         </div>
 
         <div className="flex gap-4">
-          {currentUser.role === "SUPER_ADMIN" && (
-            <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-              <DialogTrigger asChild>
-                <Button className="bg-violet-500 hover:bg-violet-600 text-white">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add course
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Add New Course</DialogTitle>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="name">Course Name</Label>
-                    <Input
-                      id="name"
-                      value={newCourseTitle}
-                      onChange={(e) => setNewCourseTitle(e.target.value)}
-                      placeholder="Enter course name"
-                    />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button variant="outline" onClick={() => setShowAddDialog(false)}>
-                    Cancel
-                  </Button>
-                  <Button onClick={handleAddCourse}>Create Course</Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+          {currentUser?.role === "SUPER_ADMIN" && (
+            <div className="flex items-center gap-2">
+              <input
+                className="px-4 py-2 bg-gray-800 text-white border border-gray-700 rounded"
+                value={newCourseTitle}
+                onChange={(e) => setNewCourseTitle(e.target.value)}
+                placeholder="Enter course name"
+              />
+              <button
+                className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded transition"
+                onClick={handleAddCourse}
+              >
+                <Plus className="w-4 h-4 inline-block mr-2" /> Add Course
+              </button>
+            </div>
           )}
 
-          <Button onClick={handleLogout} className="bg-red-500 hover:bg-red-600 text-white">
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition"
+          >
             Logout
-          </Button>
+          </button>
         </div>
       </div>
 
-      {/* Display Admin Users */}
-      {error ? (
-        <Alert className="mb-4">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      ) : (
-        <div className="mb-6">
-          <h2 className="text-lg font-medium">Admin Users</h2>
-          <ul className="list-disc ml-5 text-gray-700">
-            {users.map((user) => (
-              <li key={user.id}>{user.username}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {error && <p className="mb-4 text-red-400">{error}</p>}
 
-      {/* Courses Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {getVisibleCourses().map((course) => (
-          <Card key={course.id} className="relative bg-white">
-            <CardContent className="p-6">
-              <div className="absolute top-2 right-2 flex gap-2">
-                {(currentUser.role === "SUPER_ADMIN" ||
-                  (currentUser.role === "ADMIN" && course.adminId === currentUser.id)) && (
-                  <button className="p-2 text-gray-600 hover:text-gray-900">
-                    <Pencil className="w-4 h-4" />
+          <div
+            key={course.id}
+            className="p-6 bg-gray-800 rounded-lg shadow-lg border border-gray-700 hover:shadow-xl transition"
+          >
+            <div className="flex justify-between">
+              <h2 className="text-lg font-medium">{course.title}</h2>
+              <div className="flex gap-2">
+                {currentUser?.role === "SUPER_ADMIN" && (
+                  <button
+                    className="p-2 text-gray-400 hover:text-white transition"
+                    onClick={() => assignAdminToCourse(course.id, prompt("Enter Admin ID"))}
+                  >
+                    <UserPlus className="w-4 h-4" />
                   </button>
                 )}
-                {currentUser.role === "SUPER_ADMIN" && (
+                {(currentUser?.role === "SUPER_ADMIN" ||
+                  (currentUser?.role === "ADMIN" && course.adminId === currentUser.id)) && (
                   <>
-                    <button className="p-2 text-gray-600 hover:text-gray-900">
-                      <UserPlus className="w-4 h-4" />
+                    <button
+                      className="p-2 text-gray-400 hover:text-white transition"
+                      onClick={() => assignUserToCourse(course.id, prompt("Enter User ID"))}
+                    >
+                      <Pencil className="w-4 h-4" />
                     </button>
                     <button
-                      onClick={() => initiateDelete(course)}
-                      className="p-2 text-red-600 hover:text-red-900"
+                      onClick={() => handleDeleteCourse(course.id)}
+                      className="p-2 text-red-500 hover:text-red-700 transition"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </>
                 )}
               </div>
-              <h2 className="text-lg font-medium">{course.title}</h2>
-              <p className="text-sm text-gray-600 mt-2">{course.description}</p>
-            </CardContent>
-          </Card>
+            </div>
+            <p className="text-sm text-gray-400 mt-2">{course.description}</p>
+          </div>
         ))}
       </div>
-
-      {/* Delete Confirmation Dialog */}
-      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Confirm Deletion</DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            <p>Are you sure you want to delete "{courseToDelete?.title}"?</p>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
-              Cancel
-            </Button>
-            <Button variant="destructive" onClick={handleDeleteConfirm}>
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
