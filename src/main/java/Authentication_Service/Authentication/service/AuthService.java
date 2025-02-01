@@ -34,12 +34,14 @@
 
 package Authentication_Service.Authentication.service;
 
-import Authentication_Service.Authentication.entity.User;
-import Authentication_Service.Authentication.repository.UserRepository;
-import Authentication_Service.Authentication.utils.JwtUtil;
+import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import Authentication_Service.Authentication.entity.User;
+import Authentication_Service.Authentication.repository.UserRepository;
+import Authentication_Service.Authentication.utils.JwtUtil;
 
 @Service
 public class AuthService {
@@ -53,27 +55,23 @@ public class AuthService {
         this.jwtUtil = jwtUtil;
     }
 
-    public User registerUser(User user) {
+    public String registerUser(User user) {
+        // Check if the username already exists
+        Optional<User> existingUser = userRepository.findByUsername(user.getUsername());
+        if (existingUser.isPresent()) {
+            return "Username already exists!"; // Reject registration if username exists
+        }
+
+        // Encrypt password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+
+        // Save new user to the repository
+        userRepository.save(user);
+
+        return "User registered successfully!";
     }
 
-    // public String login(String username, String password) {
-    //     User user = userRepository.findByUsername(username).orElse(null);
-    //     if (user != null && passwordEncoder.matches(password, user.getPassword())) {
-    //         String token =jwtUtil.generateToken(username);
-    //         System.out.println("Generated Token: " + token); // Debug log
-    //         return token;
-    //     }
-    //     return null;
-    // }
-    // public String login(String username, String password) {
-    //     User user = userRepository.findByUsername(username).orElse(null);
-    //     if (user != null && passwordEncoder.matches(password, user.getPassword())) {
-    //         return jwtUtil.generateToken(username); // Return token if credentials are valid
-    //     }
-    //     return null; // Return null if credentials are invalid
-    // }
+   
     public String login(String username, String password) {
         User user = userRepository.findByUsername(username).orElse(null);
         if (user == null) {
