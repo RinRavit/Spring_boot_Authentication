@@ -12,7 +12,11 @@ public class User {
     private String id;
     private String username;
     private String password;
+    private String email;
     private Set<Role> roles;
+    private boolean oauthUser;
+
+    public User() {}
 
     // Getters and Setters
     public String getId() {
@@ -29,6 +33,9 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
