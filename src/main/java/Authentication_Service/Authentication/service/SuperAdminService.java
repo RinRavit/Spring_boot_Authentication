@@ -162,7 +162,7 @@ public class SuperAdminService {
         User user = userOptional.get();
         Optional<Role> roleOptional = roleRepository.findByName(roleName);
         if (roleOptional.isEmpty()) {
-            throw new RuntimeException("Role not found.");
+            throw new RuntimeException("Role not found." + roleName);
         }
 
         user.getRoles().add(roleOptional.get());
