@@ -232,18 +232,15 @@
 //     }
 // }
 
-
 package Authentication_Service.Authentication.utils;
 
 import Authentication_Service.Authentication.config.JwtConfig;
 import Authentication_Service.Authentication.entity.Role;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -252,7 +249,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 
 @Component
 public class JwtUtil {
@@ -263,26 +259,20 @@ public class JwtUtil {
     public JwtUtil(JwtConfig jwtConfig) {
         this.jwtConfig = jwtConfig;
         this.key = Keys.hmacShaKeyFor(jwtConfig.getSecret().getBytes());
-        System.out.println("JwtUtil initialized with secret: " + jwtConfig.getSecret());
     }
 
     public String generateToken(String username, Set<Role> roles) {
-        try {
-            Set<String> roleNames = roles.stream()
-                    .map(Role::getName)
-                    .collect(Collectors.toSet());
+        Set<String> roleNames = roles.stream()
+                .map(Role::getName)
+                .collect(Collectors.toSet());
 
-            return Jwts.builder()
-                    .setSubject(username)
-                    .claim("roles", roleNames) // Include roles in token
-                    .setIssuedAt(new Date())
-                    .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getExpiration()))
-                    .signWith(key, SignatureAlgorithm.HS256)
-                    .compact();
-        } catch (Exception e) {
-            System.err.println("Error generating token: " + e.getMessage());
-            return null;
-        }
+        return Jwts.builder()
+                .setSubject(username)
+                .claim("roles", roleNames)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getExpiration()))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
     }
 
     public String extractUsername(String token) {
@@ -318,7 +308,6 @@ public class JwtUtil {
                     .parseClaimsJws(token);
             return true;
         } catch (JwtException e) {
-            System.err.println("Token validation error: " + e.getMessage());
             return false;
         }
     }
@@ -328,6 +317,13 @@ public class JwtUtil {
         if (authentication == null || authentication.getName() == null) {
             throw new IllegalStateException("User is not authenticated");
         }
-        return authentication.getName(); // Extract username from the context
+        return authentication.getName();
+    }
+
+    public Set<String> extractRolesFromContext() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toSet());
     }
 }
