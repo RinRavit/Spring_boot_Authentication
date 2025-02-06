@@ -180,6 +180,17 @@ public class CourseController {
         }
     }
 
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+@GetMapping("/all-courses")
+public ResponseEntity<?> getAllCourses() {
+    try {
+        Set<Course> courses = courseService.getAllCourses();
+        return ResponseEntity.ok(courses);
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+    }
+}
+
     @PreAuthorize("hasRole('ADMIN')")
 @GetMapping("/admin-courses")
 public ResponseEntity<?> getCoursesForAdmin() {

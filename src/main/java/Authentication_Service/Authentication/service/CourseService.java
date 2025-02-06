@@ -315,4 +315,8 @@ public class CourseService {
     // public Set<Course> getCoursesCreatedByAdmin(String adminUsername) {
     //     return courseRepository.findByCreatedBy(adminUsername);
     // }
+
+    public Set<Course> getAllCourses() {
+        return new HashSet<>(courseRepository.findAll()); // Fetch all courses from database
+    }
 }
