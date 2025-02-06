@@ -231,26 +231,17 @@ public class CourseService {
         return courseRepository.save(course);
     }
 
-    // public void assignCourseToUser(String courseId, String userId) {
-    //     Set<String> userRoles = jwtUtil.extractRolesFromContext();
-    //     if (!userRoles.contains("ROLE_ADMIN") && !userRoles.contains("ROLE_SUPER_ADMIN")) {
-    //         throw new AccessDeniedException("Only Admins can assign courses to users.");
-    //     }
-
-    //     Course course = courseRepository.findById(courseId)
-    //             .orElseThrow(() -> new RuntimeException("Course not found"));
-
-    //     User user = userRepository.findById(userId)
-    //             .orElseThrow(() -> new RuntimeException("User not found"));
-
-    //     user.getCourses().add(course);
-    //     userRepository.save(user);
-    // }
+    public Set<Course> getCoursesCreatedByAdmin(String adminUsername) {
+        return courseRepository.findByCreatedBy(adminUsername);
+    }
+    
     public void assignCourseToUser(String courseId, String userId) {
         Set<String> userRoles = jwtUtil.extractRolesFromContext();
-        
+        String username = jwtUtil.extractUsernameFromContext();
+    
+        // Check if the user is an Admin or Super Admin
         if (!userRoles.contains("ROLE_ADMIN") && !userRoles.contains("ROLE_SUPER_ADMIN")) {
-            throw new AccessDeniedException("Only Admins can assign courses to users.");
+            throw new AccessDeniedException("Only Admins and Super Admins can assign courses to users.");
         }
     
         Course course = courseRepository.findById(courseId)
@@ -258,6 +249,11 @@ public class CourseService {
     
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    
+        // Ensure the admin can only assign users to the courses they created
+        if (userRoles.contains("ROLE_ADMIN") && !course.getCreatedBy().equals(username)) {
+            throw new AccessDeniedException("You can only assign users to courses you created.");
+        }
     
         // Ensure courses set is initialized
         if (user.getCourses() == null) {
@@ -277,6 +273,37 @@ public class CourseService {
         userRepository.save(user);
     }
     
+    // public void assignCourseToUser(String courseId, String userId) {
+    //     Set<String> userRoles = jwtUtil.extractRolesFromContext();
+        
+    //     if (!userRoles.contains("ROLE_ADMIN") && !userRoles.contains("ROLE_SUPER_ADMIN")) {
+    //         throw new AccessDeniedException("Only Admins can assign courses to users.");
+    //     }
+    
+    //     Course course = courseRepository.findById(courseId)
+    //             .orElseThrow(() -> new RuntimeException("Course not found"));
+    
+    //     User user = userRepository.findById(userId)
+    //             .orElseThrow(() -> new RuntimeException("User not found"));
+    
+    //     // Ensure courses set is initialized
+    //     if (user.getCourses() == null) {
+    //         user.setCourses(new HashSet<>());
+    //     }
+    
+    //     // Check if the user is already assigned to the course
+    //     boolean alreadyAssigned = user.getCourses().stream()
+    //             .anyMatch(c -> c.getId().equals(courseId));
+    
+    //     if (alreadyAssigned) {
+    //         throw new RuntimeException("User already assigned to this course!");
+    //     }
+    
+    //     // Assign the course to the user
+    //     user.getCourses().add(course);
+    //     userRepository.save(user);
+    // }
+    
 
     public Set<Course> getCoursesForUserByUsername(String username) {
         User user = userRepository.findByUsername(username)
@@ -285,7 +312,7 @@ public class CourseService {
         return user.getCourses() != null ? user.getCourses() : new HashSet<>();
     }
 
-    public Set<Course> getCoursesCreatedByAdmin(String adminUsername) {
-        return courseRepository.findByCreatedBy(adminUsername);
-    }
+    // public Set<Course> getCoursesCreatedByAdmin(String adminUsername) {
+    //     return courseRepository.findByCreatedBy(adminUsername);
+    // }
 }

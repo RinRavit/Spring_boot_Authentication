@@ -180,6 +180,21 @@ public class CourseController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+@GetMapping("/admin-courses")
+public ResponseEntity<?> getCoursesForAdmin() {
+    try {
+        String adminUsername = jwtUtil.extractUsernameFromContext();
+
+        // Fetch courses created by the admin
+        Set<Course> courses = courseService.getCoursesCreatedByAdmin(adminUsername);
+
+        return ResponseEntity.ok(courses);
+    } catch (Exception e) {
+        return ResponseEntity.status(500).body("Error: " + e.getMessage());
+    }
+}
+
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     @PostMapping("/assign")
     public ResponseEntity<String> assignCourseToUser(@RequestBody Map<String, String> requestBody) {
@@ -206,19 +221,19 @@ public class CourseController {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/my-created-courses")
-    public ResponseEntity<?> getCoursesForAdmin() {
-        try {
-            // Extract admin username from the token
-            String username = jwtUtil.extractUsernameFromContext();
+    // @PreAuthorize("hasRole('ADMIN')")
+    // @GetMapping("/my-created-courses")
+    // public ResponseEntity<?> getCoursesForAdmin() {
+    //     try {
+    //         // Extract admin username from the token
+    //         String username = jwtUtil.extractUsernameFromContext();
 
-            // Fetch courses created by the admin
-            Set<Course> courses = courseService.getCoursesCreatedByAdmin(username);
+    //         // Fetch courses created by the admin
+    //         Set<Course> courses = courseService.getCoursesCreatedByAdmin(username);
 
-            return ResponseEntity.ok(courses);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error: " + e.getMessage());
-        }
-    }
+    //         return ResponseEntity.ok(courses);
+    //     } catch (Exception e) {
+    //         return ResponseEntity.status(500).body("Error: " + e.getMessage());
+    //     }
+    // }
 }
