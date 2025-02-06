@@ -199,15 +199,35 @@ public class AuthService {
     //     userRepository.save(user);
     //     return "User registered successfully!";
     // }
+    // public String registerUser(User user) {
+    //     user.setPassword(passwordEncoder.encode(user.getPassword())); // Encrypt password
+    //     Role userRole = roleRepository.findByName("USER")
+    //             .orElseThrow(() -> new RuntimeException("USER role not found"));
+    //     user.setRoles(Set.of(userRole));
+    
+    //     userRepository.save(user);
+    //     return "User registered successfully!";
+    // }
     public String registerUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword())); // Encrypt password
+        // Check if the username already exists
+        Optional<User> existingUser = userRepository.findByUsername(user.getUsername());
+        if (existingUser.isPresent()) {
+            throw new RuntimeException("Username already taken");
+        }
+    
+        // Encrypt the password
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    
+        // Assign the default role (USER)
         Role userRole = roleRepository.findByName("USER")
                 .orElseThrow(() -> new RuntimeException("USER role not found"));
         user.setRoles(Set.of(userRole));
     
+        // Save the new user
         userRepository.save(user);
         return "User registered successfully!";
     }
+    
     
 
     public String login(String username, String password) {

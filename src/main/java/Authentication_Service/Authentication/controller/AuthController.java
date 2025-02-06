@@ -1,6 +1,7 @@
 package Authentication_Service.Authentication.controller;
 // package Authentication_Service.Authentication;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,10 +20,18 @@ public class AuthController {
         this.authService = authService;
     }
 
+    // @PostMapping("/register")
+    // public ResponseEntity<?> registerUser(@RequestBody User user) {
+    //     return ResponseEntity.ok(authService.registerUser(user));
+    // }
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User user) {
+public ResponseEntity<?> registerUser(@RequestBody User user) {
+    try {
         return ResponseEntity.ok(authService.registerUser(user));
+    } catch (RuntimeException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+}
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
