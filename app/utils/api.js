@@ -2,6 +2,7 @@ import axios from "axios";
 
 const API = axios.create({
   baseURL: "http://localhost:8080", // Spring Boot backend URL
+  withCredentials: true,
 });
 
 // Automatically add the JWT token to headers if it exists
