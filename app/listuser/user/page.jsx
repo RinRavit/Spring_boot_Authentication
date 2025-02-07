@@ -364,11 +364,7 @@ export default function ListUser() {
               ))
             ) : (
               <tr>
-<<<<<<< HEAD
                 <td colSpan="4" className="px-6 py-4 text-center text-gray-500">
-=======
-                <td colSpan="5" className="text-center text-gray-500 p-4">
->>>>>>> 79be621553994ab54de779fb60683b354ab3714c
                   No users found.
                 </td>
               </tr>
