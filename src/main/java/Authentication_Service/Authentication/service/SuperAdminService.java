@@ -128,6 +128,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -174,4 +176,20 @@ public class SuperAdminService {
         PageRequest pageRequest = PageRequest.of(page, size);
         return userRepository.findAll(pageRequest);
     }
+    public Map<String, Long> getRoleCounts() {
+    Map<String, Long> roleCounts = new HashMap<>();
+    long userCount = userRepository.findAll().stream()
+            .filter(user -> user.getRoles().stream()
+                    .anyMatch(role -> role.getName().equalsIgnoreCase("USER")))
+            .count();
+
+    long adminCount = userRepository.findAll().stream()
+            .filter(user -> user.getRoles().stream()
+                    .anyMatch(role -> role.getName().equalsIgnoreCase("ADMIN")))
+            .count();
+
+    roleCounts.put("USER", userCount);
+    roleCounts.put("ADMIN", adminCount);
+    return roleCounts;
+}
 }
