@@ -23,7 +23,7 @@ export default function ListAdmin() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <h1 className="text-2xl font-bold mb-4">List of Admins</h1>
+      <h1 className="text-2xl font-bold mb-4 text-black">List of Admins</h1>
       <button
         onClick={() => router.push("/dashboard/superadmin")}
         className="mb-4 bg-blue-500 text-white px-4 py-2 rounded"
@@ -42,7 +42,7 @@ export default function ListAdmin() {
           </thead>
           <tbody>
             {admins.map((admin) => (
-              <tr key={admin.id} className="hover:bg-gray-100">
+              <tr key={admin.id} className="hover:bg-gray-100 text-black ">
                 <td className="p-2 border border-gray-200">{admin.id}</td>
                 <td className="p-2 border border-gray-200">{admin.username}</td>
                 <td className="p-2 border border-gray-200">{admin.email}</td>
