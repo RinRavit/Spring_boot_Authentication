@@ -36,6 +36,13 @@ public class SecurityConfig {
                         .requestMatchers("/courses/create", "/courses/assign").hasAnyRole("ADMIN", "SUPER_ADMIN")
                         .requestMatchers("/courses/my-courses").hasRole("USER")
                         .requestMatchers("/courses/my-created-courses").hasRole("ADMIN")
+
+                        //Create Role for PROVINCE, DISTRICT, COMMUNE
+                        .requestMatchers("/province/**").hasRole("PROVINCE")
+                        .requestMatchers("/district/**").hasRole("DISTRICT")
+                        .requestMatchers("/commune/**").hasRole("COMMUNE")
+
+                        .requestMatchers("/contractors/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
