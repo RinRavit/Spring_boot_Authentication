@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers("/commune/**").hasRole("COMMUNE")
 
                         .requestMatchers("/contractors/**").hasRole("ADMIN")
+                        .requestMatchers("/contracts/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

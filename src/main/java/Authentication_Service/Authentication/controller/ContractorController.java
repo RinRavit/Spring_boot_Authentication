@@ -1,67 +1,69 @@
-// package Authentication_Service.Authentication.controller;
-
-// import Authentication_Service.Authentication.entity.Contractor;
-// import Authentication_Service.Authentication.service.ContractorService;
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.http.ResponseEntity;
-// import org.springframework.security.access.prepost.PreAuthorize;
-// import org.springframework.web.bind.annotation.*;
-
-// import java.util.List;
-
-// @RestController
-// @RequestMapping("/contractors")
-// @PreAuthorize("hasRole('ADMIN')")
-// public class ContractorController {
-
-//     @Autowired
-//     private ContractorService contractorService;
-
-//     @PostMapping("/create")
-//     public ResponseEntity<Contractor> createContractor(@RequestBody Contractor contractor) {
-//         Contractor saved = contractorService.createContractor(contractor);
-//         return ResponseEntity.ok(saved);
-//     }
-
-//     @GetMapping
-//     public ResponseEntity<List<Contractor>> getAllContractors() {
-//         return ResponseEntity.ok(contractorService.getAllContractors());
-//     }
-// }
-
-
 package Authentication_Service.Authentication.controller;
 
 import Authentication_Service.Authentication.entity.Contractor;
 import Authentication_Service.Authentication.service.ContractorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/contractors")
-@PreAuthorize("hasRole('ADMIN')")
 public class ContractorController {
 
     @Autowired
     private ContractorService contractorService;
 
+  
+    // Create
     @PostMapping("/create")
     public ResponseEntity<?> createContractor(@RequestBody Contractor contractor) {
-        Object result = contractorService.createContractor(contractor);
-
-        if (result instanceof String) {
-            return ResponseEntity.badRequest().body(result);
-        }
-
-        return ResponseEntity.ok(result);
+    try {
+        Contractor saved = contractorService.createContractor(contractor);
+        return ResponseEntity.ok(saved);
+    } catch (Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
     }
 
-    @GetMapping
+    // List all
+    @GetMapping("/list")
     public ResponseEntity<List<Contractor>> getAllContractors() {
-        return ResponseEntity.ok(contractorService.getAllContractors());
+    List<Contractor> contractors = contractorService.getAllContractors();
+    return ResponseEntity.ok(contractors);
+    }
+
+
+    // Update
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateContractor(@PathVariable String id, @RequestBody Contractor updatedContractor) {
+    try {
+        Contractor updated = contractorService.updateContractor(id, updatedContractor);
+        return ResponseEntity.ok(updated);
+    } catch (Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+    }
+
+    // List by Id
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getContractorById(@PathVariable String id) {
+    try {
+        Contractor contractor = contractorService.getContractorById(id);
+        return ResponseEntity.ok(contractor);
+    } catch (RuntimeException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+    }
+
+    // Delete
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteContractor(@PathVariable String id) {
+    try {
+        contractorService.deleteContractor(id);
+        return ResponseEntity.ok("Contractor " + id + " has been deleted successfully.");
+    } catch (RuntimeException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
     }
 }
