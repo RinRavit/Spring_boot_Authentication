@@ -32,10 +32,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/register", "/auth/login").permitAll()
                         .requestMatchers("/**").permitAll()
-                        .requestMatchers("/superadmin/**","/courses/all-courses").hasRole("SUPER_ADMIN")
-                        .requestMatchers("/courses/create", "/courses/assign").hasAnyRole("ADMIN", "SUPER_ADMIN")
-                        .requestMatchers("/courses/my-courses").hasRole("USER")
-                        .requestMatchers("/courses/my-created-courses").hasRole("ADMIN")
+
 
                         //Create Role for PROVINCE, DISTRICT, COMMUNE
                         .requestMatchers("/province/**").hasRole("PROVINCE")

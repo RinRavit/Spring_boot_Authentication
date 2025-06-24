@@ -148,7 +148,6 @@ public class User {
     private String password;
     private String email;
     private Set<Role> roles;
-    private Set<Course> courses = new HashSet<>(); // Initialize the courses field
 
     public User() {}
 
@@ -191,13 +190,5 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
-    }
-
-    public Set<Course> getCourses() {
-        return courses;
-    }
-
-    public void setCourses(Set<Course> courses) {
-        this.courses = courses;
     }
 }
