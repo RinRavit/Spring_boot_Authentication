@@ -8,17 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface ContractorRepository extends MongoRepository<Contractor, String> {
-    // Optional<Contractor> findByImageAndDirectorNameAndContractorAndCompanyNameAndPhone(
-    //     String image,
-    //     String directorName,
-    //     String contractor,
-    //     String companyName,
-    //     String location,
-    //     String phone,
-    //     String typeService,
-    //     String typeContract,
-    //     String typeContractor
-    // );
     boolean existsBydirectorName(String directorName);
     
 }
