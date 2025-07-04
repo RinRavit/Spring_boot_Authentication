@@ -34,7 +34,7 @@ public class ContractController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateContract(
-        @PathVariable String id,
+        @PathVariable Long id,
         @RequestBody Contract updatedContract
     ) {
         try {
@@ -47,7 +47,7 @@ public class ContractController {
 
     // List by Id
     @GetMapping("/{id}")
-    public ResponseEntity<?> getContractById(@PathVariable String id) {
+    public ResponseEntity<?> getContractById(@PathVariable Long id) {
         try {
             Contract contract = contractService.getContractById(id);
             return ResponseEntity.ok(contract);
@@ -58,7 +58,7 @@ public class ContractController {
 
     // Delete 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteContract(@PathVariable String id) {
+    public ResponseEntity<?> deleteContract(@PathVariable Long id) {
         try {
             contractService.deleteContract(id);
             return ResponseEntity.ok("Contract " + id + " has been deleted successfully.");

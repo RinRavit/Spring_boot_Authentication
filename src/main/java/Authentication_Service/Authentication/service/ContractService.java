@@ -26,7 +26,7 @@ public class ContractService {
     }
 
     // Update
-    public Contract updateContract(String id, Contract updatedData) {
+    public Contract updateContract(Long id, Contract updatedData) {
         Contract existingContract = contractRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Contract not found"));
         existingContract.setNoContract(updatedData.getNoContract());
@@ -51,13 +51,13 @@ public class ContractService {
     }
 
     // List by Id
-    public Contract getContractById(String id) {
+    public Contract getContractById(Long id) {
         return contractRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Contract not found with ID: " + id));
     }
     
     // Delete
-    public void deleteContract(String id) {
+    public void deleteContract(Long id) {
         if (!contractRepository.existsById(id)) {
             throw new RuntimeException("Contract not found with ID: " + id);
         }

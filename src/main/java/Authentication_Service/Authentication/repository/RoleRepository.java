@@ -4,9 +4,10 @@ import Authentication_Service.Authentication.entity.Role;
 
 import java.util.Optional;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface RoleRepository extends MongoRepository<Role, String> {
+public interface RoleRepository extends JpaRepository<Role, Long> {
+    // Optional<Role> findByNamel(Long name);
     Optional<Role> findByName(String name);
 
 }

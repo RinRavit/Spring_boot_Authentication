@@ -1,8 +1,8 @@
 package Authentication_Service.Authentication.repository;
 
 import Authentication_Service.Authentication.entity.Technician;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TechnicianRepository extends MongoRepository<Technician, String> {
+public interface TechnicianRepository extends JpaRepository<Technician, Long> {
     boolean existsByNameEnglish(String nameEnglish);
 }

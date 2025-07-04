@@ -30,7 +30,7 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getProjectById(@PathVariable String id) {
+    public ResponseEntity<?> getProjectById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(projectService.getProjectById(id));
         } catch (Exception e) {
@@ -39,7 +39,7 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateProject(@PathVariable String id, @RequestBody Project project) {
+    public ResponseEntity<?> updateProject(@PathVariable Long id, @RequestBody Project project) {
         try {
             return ResponseEntity.ok(projectService.updateProject(id, project));
         } catch (Exception e) {
@@ -48,7 +48,7 @@ public class ProjectController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProject(@PathVariable String id) {
+    public ResponseEntity<?> deleteProject(@PathVariable Long id) {
         try {
             projectService.deleteProject(id);
             return ResponseEntity.ok("Project " + id + " has been deleted successfully.");

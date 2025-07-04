@@ -21,7 +21,7 @@ public class ContractorService {
 
     // Create Contractor
     public Contractor createContractor(Contractor contractor) throws IOException {
-        if (contractorRepository.existsBydirectorName(contractor.getdirectorName())) {
+        if (contractorRepository.existsByDirectorName(contractor.getdirectorName())) {
             throw new RuntimeException("Contractor already exists");
         }
     
@@ -50,7 +50,7 @@ public class ContractorService {
 
 
     // Update Contractor
-    public Contractor updateContractor(String id, Contractor updatedContractor) throws IOException {
+    public Contractor updateContractor(Long id, Contractor updatedContractor) throws IOException {
         Contractor existing = contractorRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Contractor not found"));
     
@@ -80,13 +80,13 @@ public class ContractorService {
     }
 
     // List by ID
-    public Contractor getContractorById(String id) {
+    public Contractor getContractorById(Long id) {
         return contractorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Contractor not found with ID: " + id));
     }
     
     // Detele
-    public void deleteContractor(String id) {
+    public void deleteContractor(Long id) {
         if (!contractorRepository.existsById(id)) {
             throw new RuntimeException("Contractor not found with ID: " + id);
         }

@@ -48,11 +48,11 @@ public class TechnicianService {
         return technicianRepository.findAll();
     }
 
-    public Technician getTechnicianById(String id) {
+    public Technician getTechnicianById(Long id) {
         return technicianRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
     }
 
-    public Technician updateTechnician(String id, Technician updated) throws IOException {
+    public Technician updateTechnician(Long id, Technician updated) throws IOException {
         Technician existing = getTechnicianById(id);
 
         existing.setNameEnglish(updated.getNameEnglish());
@@ -70,7 +70,7 @@ public class TechnicianService {
         return technicianRepository.save(existing);
     }
 
-    public void deleteTechnician(String id) {
+    public void deleteTechnician(Long id) {
         technicianRepository.deleteById(id);
     }
 }

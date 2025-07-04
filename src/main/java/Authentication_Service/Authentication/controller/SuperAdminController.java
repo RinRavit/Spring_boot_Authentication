@@ -44,20 +44,34 @@ public class SuperAdminController {
     }
 
     @PreAuthorize("hasRole('SUPER_ADMIN')")
-    @PostMapping("/assign-role")
-    public ResponseEntity<?> assignRoleToUser(@RequestBody Map<String, String> requestBody) {
-        try {
-            String userId = requestBody.get("userId");
-            String roleName = requestBody.get("roleName");
+    // @PostMapping("/assign-role")
+    // public ResponseEntity<?> assignRoleToUser(@RequestBody Map<Long, String> requestBody) {
+    //     try {
+    //         Long userId = requestBody.get("userId");
+    //         String roleName = requestBody.get("roleName");
 
-            superAdminService.assignRoleToUser(userId, roleName);
-            return ResponseEntity.ok("Role assigned successfully!");
-        } catch (AccessDeniedException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server Error: " + e.getMessage());
-        }
+    //         superAdminService.assignRoleToUser(userId, roleName);
+    //         return ResponseEntity.ok("Role assigned successfully!");
+    //     } catch (AccessDeniedException e) {
+    //         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied: " + e.getMessage());
+    //     } catch (Exception e) {
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server Error: " + e.getMessage());
+    //     }
+    // }
+    @PostMapping("/assign-role")
+public ResponseEntity<?> assignRoleToUser(@RequestBody Map<String, String> requestBody) {
+    try {
+        Long userId = Long.parseLong(requestBody.get("userId")); // convert from String
+        String roleName = requestBody.get("roleName");
+
+        superAdminService.assignRoleToUser(userId, roleName);
+        return ResponseEntity.ok("Role assigned successfully!");
+    } catch (AccessDeniedException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied: " + e.getMessage());
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server Error: " + e.getMessage());
     }
+}
     @PreAuthorize("hasRole('SUPER_ADMIN')")
 @GetMapping("/role-count")
 public ResponseEntity<?> getRoleCount() {

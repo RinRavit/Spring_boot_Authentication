@@ -1,96 +1,29 @@
 
-// // package Authentication_Service.Authentication.entity;
-
-// // import java.util.Set;
-
-// // import org.springframework.data.annotation.Id;
-// // import org.springframework.data.mongodb.core.mapping.Document;
-
-// // @Document(collection = "roles")
-// // public class Role {
-// //     @Id
-// //     private String id;
-// //     private String name;
-// //     private Set<Permission> permissions;
-
-// //     // Getters and Setters
-// //     public String getId() {
-// //         return id;
-// //     }
-
-// //     public void setId(String id) {
-// //         this.id = id;
-// //     }
-
-// //     public String getName() {
-// //         return name;
-// //     }
-
-// //     public void setName(String name) {
-// //         this.name = name;
-// //     }
-
-// //     public Set<Permission> getPermissions() {
-// //         return permissions;
-// //     }
-
-// //     public void setPermissions(Set<Permission> permissions) {
-// //         this.permissions = permissions;
-// //     }
-// // }
-
-
-// package Authentication_Service.Authentication.entity;
-
-// import org.springframework.data.annotation.Id;
-// import org.springframework.data.mongodb.core.mapping.Document;
-
-// @Document(collection = "roles")
-// public class Role {
-//     @Id
-//     private String id;
-//     private String name;
-
-//     // Default constructor
-//     public Role() {}
-
-//     // Constructor with name
-//     public Role(String name) {
-//         this.name = name;
-//     }
-
-//     // Getters and Setters
-//     public String getId() {
-//         return id;
-//     }
-
-//     public void setId(String id) {
-//         this.id = id;
-//     }
-
-//     public String getName() {
-//         return name;
-//     }
-
-//     public void setName(String name) {
-//         this.name = name;
-//     }
-// }
-
 
 package Authentication_Service.Authentication.entity;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
+import jakarta.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
-@Document(collection = "roles")
+@Entity
+@Table(name = "roles")
 public class Role {
+
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
     private String name;
-    private Set<Permission> permissions;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "role_permissions",
+        joinColumns = @JoinColumn(name = "role_id"),
+        inverseJoinColumns = @JoinColumn(name = "permission_id")
+    )
+    private Set<Permission> permissions = new HashSet<>();
 
     public Role() {}
 
@@ -99,11 +32,11 @@ public class Role {
     }
 
     // Getters and Setters
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

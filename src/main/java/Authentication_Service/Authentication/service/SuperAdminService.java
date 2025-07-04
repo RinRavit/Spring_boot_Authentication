@@ -28,7 +28,7 @@ public class SuperAdminService {
         this.roleRepository = roleRepository;
     }
 
-    public void assignRoleToUser(String userId, String roleName) {
+    public void assignRoleToUser(Long userId, String roleName) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getAuthorities() == null) {
             throw new AccessDeniedException("No authentication found.");

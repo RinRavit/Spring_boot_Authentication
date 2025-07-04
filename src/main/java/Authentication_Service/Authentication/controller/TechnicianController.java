@@ -30,7 +30,7 @@ public class TechnicianController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getTechnicianById(@PathVariable String id) {
+    public ResponseEntity<?> getTechnicianById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(technicianService.getTechnicianById(id));
         } catch (Exception e) {
@@ -39,7 +39,7 @@ public class TechnicianController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateTechnician(@PathVariable String id, @RequestBody Technician technician) {
+    public ResponseEntity<?> updateTechnician(@PathVariable Long id, @RequestBody Technician technician) {
         try {
             return ResponseEntity.ok(technicianService.updateTechnician(id, technician));
         } catch (Exception e) {
@@ -48,7 +48,7 @@ public class TechnicianController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTechnician(@PathVariable String id) {
+    public ResponseEntity<?> deleteTechnician(@PathVariable Long id) {
         try {
             technicianService.deleteTechnician(id);
             return ResponseEntity.ok("Technician deleted");

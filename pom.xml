@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.2</version>
+		<version>3.4.7</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>Authentication_Service</groupId>
@@ -47,10 +47,20 @@
 	</dependency>
 
     <!-- MongoDB -->
-    	<dependency>
+    	<!-- <dependency>
         	<groupId>org.springframework.boot</groupId>
         	<artifactId>spring-boot-starter-data-mongodb</artifactId>
-    	</dependency>
+    	</dependency> -->
+		<!-- JPA and PostgreSQL -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>org.postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+</dependency>
 		
 		<!-- <dependency>
     		<groupId>io.jsonwebtoken</groupId>

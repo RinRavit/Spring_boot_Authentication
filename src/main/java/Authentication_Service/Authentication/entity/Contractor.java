@@ -1,48 +1,52 @@
+
 package Authentication_Service.Authentication.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.data.mongodb.core.mapping.Field;
-
+import jakarta.persistence.*;
+import lombok.*;
 import java.time.Instant;
 
+@Entity
+@Table(name = "contractors")
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "contractors")
 public class Contractor {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String image;
+
+    @Column(name = "director_name")
     private String directorName;
+
     private String contractor;
+
+    @Column(name = "company_name")
     private String companyName;
+
     private String location;
+
     private String phone;
+
+    @Column(name = "type_service")
     private String typeService;
+
+    @Column(name = "type_contract")
     private String typeContract;
+
+    @Column(name = "type_contractor")
     private String typeContractor;
 
-    @CreatedDate
-    private Instant createdAt;
-
+    @Column(name = "created_at")
+    private Instant createdAt = Instant.now();
 
     // ID
-    public String getid() {
+    public Long getid() {
         return id;
     }
-    public void setid(String id) {
+    public void setid(Long id) {
         this.id = id;
     }
     // Image

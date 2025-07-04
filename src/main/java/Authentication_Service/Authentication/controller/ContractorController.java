@@ -36,7 +36,7 @@ public class ContractorController {
 
     // Update
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateContractor(@PathVariable String id, @RequestBody Contractor updatedContractor) {
+    public ResponseEntity<?> updateContractor(@PathVariable Long id, @RequestBody Contractor updatedContractor) {
     try {
         Contractor updated = contractorService.updateContractor(id, updatedContractor);
         return ResponseEntity.ok(updated);
@@ -47,7 +47,7 @@ public class ContractorController {
 
     // List by Id
     @GetMapping("/{id}")
-    public ResponseEntity<?> getContractorById(@PathVariable String id) {
+    public ResponseEntity<?> getContractorById(@PathVariable Long id) {
     try {
         Contractor contractor = contractorService.getContractorById(id);
         return ResponseEntity.ok(contractor);
@@ -58,7 +58,7 @@ public class ContractorController {
 
     // Delete
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteContractor(@PathVariable String id) {
+    public ResponseEntity<?> deleteContractor(@PathVariable Long id) {
     try {
         contractorService.deleteContractor(id);
         return ResponseEntity.ok("Contractor " + id + " has been deleted successfully.");
