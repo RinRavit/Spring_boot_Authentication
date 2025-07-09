@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ContractRepository extends JpaRepository<Contract, Long> {
     
-    boolean existsByNoContract(String noContract);
+    boolean existsByContractNo(String contractNo);
 }
 

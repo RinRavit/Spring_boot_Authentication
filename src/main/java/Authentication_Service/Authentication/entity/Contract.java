@@ -18,49 +18,49 @@ public class Contract {
     private Long id;
 
     @Column(name = "no_contract")
-    private String noContract;
+    private String contractNo;
 
-    private String mecanic;
+    private String techincalAssistant;
 
-    private String contractor;
+    private String contractorList;
 
     private String description;
 
-    private String competitivebid;
+    private String competitivebidding;
 
-    private String totalbider;
+    private String numberofbidder;
 
     @Column(name = "type_contract")
-    private String typeContract;
+    private String typeprocurment;
 
     @Column(name = "type_project")
-    private String typeProject;
+    private String natureOfProject;
 
     @Column(name = "dated_contract")
-    private String datedContract;
+    private String Contractsigndate;
 
-    private String duration;
+    private String Guaranteeperiod;
 
-    private String started;
+    private String startDate;
 
-    private String ended;
+    private String completionDate;
 
-    @Column(name = "name_project")
-    private String nameProject;
+    // @Column(name = "name_project")
+    // private String nameProject;
 
-    @Column(name = "amount_budget")
-    private Double amountBudget;
+    // @Column(name = "amount_budget")
+    // private Double amountBudget;
 
-    @Column(name = "status_contract")
-    private String statusContract;
+    // @Column(name = "status_contract")
+    // private String statusContract;
 
-    @Column(name = "create_by_contractor")
-    private String createBycontractor; // This could be a @ManyToOne if needed
+    // @Column(name = "create_by_contractor")
+    // private String createBycontractor; // This could be a @ManyToOne if needed
 
-    private String date;
+    // private String date;
 
-    @Column(name = "created_at")
-    private Instant createdAt = Instant.now();
+    // @Column(name = "created_at")
+    // private Instant createdAt = Instant.now();
 
         // Id
         public Long getId() {
@@ -69,28 +69,28 @@ public class Contract {
         public void setId(Long id) {
             this.id = id;
         }
-        public String getNoContract() {
-            return noContract;
+        public String getcontractNo() {
+            return contractNo;
         }
     
-        public void setNoContract(String noContract) {
-            this.noContract = noContract;
+        public void setcontractNo(String contractNo) {
+            this.contractNo = contractNo;
         }
     
-        public String getMecanic() {
-            return mecanic;
+        public String gettechincalAssistant() {
+            return techincalAssistant;
         }
     
-        public void setMecanic(String mecanic) {
-            this.mecanic = mecanic;
+        public void settechincalAssistant(String techincalAssistant) {
+            this.techincalAssistant = techincalAssistant;
         }
     
-        public String getContractor() {
-            return contractor;
+        public String getcontractorList() {
+            return contractorList;
         }
     
-        public void setContractor(String contractor) {
-            this.contractor = contractor;
+        public void setcontractorList(String contractorList) {
+            this.contractorList = contractorList;
         }
     
         public String getDescription() {
@@ -102,108 +102,108 @@ public class Contract {
         }
     
         //Compeitivebid
-        public String getCompetitivebid() {
-            return competitivebid;
+        public String getcompetitivebidding() {
+            return competitivebidding;
         }
-        public void setCompetitivebid(String competitivebid) {
-            this.competitivebid = competitivebid;
+        public void setcompetitivebidding(String competitivebidding) {
+            this.competitivebidding = competitivebidding;
         }
     
         //TotalBider
-        public String getTotalbider() {
-            return totalbider;
+        public String getnumberofbidder() {
+            return numberofbidder;
         }
-        public void setTotalbider(String totalbider) {
-            this.totalbider = totalbider;
+        public void setnumberofbidder(String numberofbidder) {
+            this.numberofbidder = numberofbidder;
         }
     
         //TypeContact
-        public String getTypeContract() {
-            return typeContract;
+        public String gettypeprocurment() {
+            return typeprocurment;
         }
-        public void setTypeContract(String typeContract) {
-            this.typeContract = typeContract;
+        public void settypeprocurment(String typeprocurment) {
+            this.typeprocurment = typeprocurment;
         }
     
         // TypeProject
-        public String getTypeProject() {
-            return typeProject;
+        public String getnatureOfProject() {
+            return natureOfProject;
         }
-        public void setTypeProject(String typeProject) {
-            this.typeProject = typeProject;
+        public void setnatureOfProject(String natureOfProject) {
+            this.natureOfProject = natureOfProject;
         }
     
         // DatedContract
-        public String getDatedContract() {
-            return datedContract;
+        public String getContractsigndate() {
+            return Contractsigndate;
         }
-        public void setDatedContract(String datedContract) {
-            this.datedContract = datedContract;
+        public void setContractsigndate(String Contractsigndate) {
+            this.Contractsigndate = Contractsigndate;
         }
     
         // Duration 
-        public String getDuration() {
-            return duration;
+        public String getGuaranteeperiod() {
+            return Guaranteeperiod;
         }
-        public void setDuration(String duration) {
-            this.duration = duration;
+        public void setGuaranteeperiod(String Guaranteeperiod) {
+            this.Guaranteeperiod = Guaranteeperiod;
         }
     
         // Started
-        public String getStarted() {
-            return started;
+        public String getstartDate () {
+            return startDate;
         }
-        public void setStarted(String started) {
-            this.started = started;
+        public void setstartDate (String startDate) {
+            this.startDate = startDate;
         }
     
         // Ended
-        public String getEnded() {
-            return ended;
+        public String getcompletionDate() {
+            return completionDate;
         }
-        public void setEnded(String ended) {
-            this.ended = ended;
-        }
-    
-        //NameContract
-        public String getNameProject() {
-            return nameProject;
-        }
-        public void setNameProject(String nameProject) {
-            this.nameProject = nameProject;
+        public void setcompletionDate(String completionDate) {
+            this.completionDate = completionDate;
         }
     
-        //AmountBugdet
-        public Double getAmountBudget() {
-            return amountBudget;
-        }
-        public void setAmountBudget(Double amountBudget) {
-            this.amountBudget = amountBudget;
-        }
+        // //NameContract
+        // public String getNameProject() {
+        //     return nameProject;
+        // }
+        // public void setNameProject(String nameProject) {
+        //     this.nameProject = nameProject;
+        // }
     
-        // StatusContract
-        public String getStatusContract() {
-            return statusContract;
-        }
+        // //AmountBugdet
+        // public Double getAmountBudget() {
+        //     return amountBudget;
+        // }
+        // public void setAmountBudget(Double amountBudget) {
+        //     this.amountBudget = amountBudget;
+        // }
     
-        public void setStatusContract(String statusContract) {
-            this.statusContract = statusContract;
-        }
+        // // StatusContract
+        // public String getStatusContract() {
+        //     return statusContract;
+        // }
     
-        public String getCreateBycontractor() {
-            return createBycontractor;
-        }
+        // public void setStatusContract(String statusContract) {
+        //     this.statusContract = statusContract;
+        // }
     
-        public void setCreateBycontractor(String createBycontractor) {
-            this.createBycontractor = createBycontractor;
-        }
+        // public String getCreateBycontractor() {
+        //     return createBycontractor;
+        // }
     
-        public String getDate() {
-            return date;
-        }
+        // public void setCreateBycontractor(String createBycontractor) {
+        //     this.createBycontractor = createBycontractor;
+        // }
     
-        public void setDate(String date) {
-            this.date = date;
-        }
+        // public String getDate() {
+        //     return date;
+        // }
+    
+        // public void setDate(String date) {
+        //     this.date = date;
+        // }
 }
 

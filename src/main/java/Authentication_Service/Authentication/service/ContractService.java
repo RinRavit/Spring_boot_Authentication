@@ -14,7 +14,7 @@ public class ContractService {
 
     // Create
     public Contract createContract(Contract contract) {
-        if (contractRepository.existsByNoContract(contract.getNoContract())) {
+        if (contractRepository.existsByContractNo(contract.getcontractNo())) {
             throw new RuntimeException("Contract already exists");
         }
         return contractRepository.save(contract);
@@ -29,23 +29,23 @@ public class ContractService {
     public Contract updateContract(Long id, Contract updatedData) {
         Contract existingContract = contractRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Contract not found"));
-        existingContract.setNoContract(updatedData.getNoContract());
-        existingContract.setMecanic(updatedData.getMecanic());
-        existingContract.setContractor(updatedData.getContractor());
+        existingContract.setcontractNo(updatedData.getcontractNo());
+        existingContract.settechincalAssistant(updatedData.gettechincalAssistant());
+        existingContract.setcontractorList(updatedData.getcontractorList());
         existingContract.setDescription(updatedData.getDescription());
-        existingContract.setCompetitivebid(updatedData.getCompetitivebid());
-        existingContract.setTotalbider(updatedData.getTotalbider());
-        existingContract.setTypeContract(updatedData.getTypeContract());
-        existingContract.setTypeProject(updatedData.getTypeProject());
-        existingContract.setDatedContract(updatedData.getDatedContract());
-        existingContract.setDuration(updatedData.getDuration());
-        existingContract.setStarted(updatedData.getStarted());
-        existingContract.setEnded(updatedData.getEnded());
-        existingContract.setNameProject(updatedData.getNameProject());
-        existingContract.setAmountBudget(updatedData.getAmountBudget());
-        existingContract.setStatusContract(updatedData.getStatusContract());
-        existingContract.setDate(updatedData.getDate());
-        existingContract.setCreateBycontractor(updatedData.getCreateBycontractor());
+        existingContract.setcompetitivebidding(updatedData.getcompetitivebidding());
+        existingContract.setnumberofbidder(updatedData.getnumberofbidder());
+        existingContract.settypeprocurment(updatedData.gettypeprocurment());
+        existingContract.setnatureOfProject(updatedData.getnatureOfProject());
+        existingContract.setContractsigndate(updatedData.getContractsigndate());
+        existingContract.setGuaranteeperiod(updatedData.getGuaranteeperiod());
+        existingContract.setstartDate(updatedData.getstartDate());
+        existingContract.setcompletionDate(updatedData.getcompletionDate());
+        // existingContract.setNameProject(updatedData.getNameProject());
+        // existingContract.setAmountBudget(updatedData.getAmountBudget());
+        // existingContract.setStatusContract(updatedData.getStatusContract());
+        // existingContract.setDate(updatedData.getDate());
+        // existingContract.setCreateBycontractor(updatedData.getCreateBycontractor());
     
         return contractRepository.save(existingContract);
     }

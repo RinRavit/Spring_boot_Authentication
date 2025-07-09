@@ -110,7 +110,7 @@ public ResponseEntity<?> getAllUsersWithOnlyUserRole() {
             .body("Error fetching users: " + e.getMessage());
     }
 }
-@PreAuthorize("hasRole('SUPER_ADMIN')")
+@PreAuthorize("hasRole('SUPER_ADMIN') or hasRole('ADMIN')")
 @PostMapping("/create-user")
 public ResponseEntity<?> createUserBySuperAdmin(@RequestBody Map<String, Object> requestBody) {
     try {

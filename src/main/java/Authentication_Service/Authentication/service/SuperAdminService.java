@@ -86,7 +86,62 @@ public class SuperAdminService {
     return roleCounts;
 }
 
+// Create user both super admin & admin on role admin 
+// public User createUserBySuperAdmin(Map<String, Object> requestBody) {
+//     String username = (String) requestBody.get("username");
+//     String password = (String) requestBody.get("password");
+//     String email = (String) requestBody.get("email");
+//     String englishName = (String) requestBody.get("englishName");
+//     String khmerName = (String) requestBody.get("khmerName");
+//     String gender = (String) requestBody.get("gender");
+//     String countryCode = (String) requestBody.get("countryCode");
+//     String phoneNumber = (String) requestBody.get("phoneNumber");
+//     String province = (String) requestBody.get("province");
+//     String district = (String) requestBody.get("district");
+//     String commune = (String) requestBody.get("commune");
+
+//     if (userRepository.findByUsername(username).isPresent()) {
+//         throw new RuntimeException("Username already exists");
+//     }
+
+//     User user = new User();
+//     user.setUsername(username);
+//     user.setEmail(email);
+//     user.setPassword(passwordEncoder.encode(password));
+//     user.setEnglishName(englishName);
+//     user.setKhmerName(khmerName);
+//     user.setGender(gender);
+//     user.setCountryCode(countryCode);
+//     user.setPhoneNumber(phoneNumber);
+//     user.setProvince(province);
+//     user.setDistrict(district);
+//     user.setCommune(commune);
+
+//     List<String> roleNames = (List<String>) requestBody.get("roles");
+//     if (roleNames == null || roleNames.isEmpty()) {
+//         throw new RuntimeException("At least one role must be specified");
+//     }
+
+//     Set<Role> roles = roleNames.stream()
+//         .map(roleName -> roleRepository.findByName(roleName)
+//             .orElseThrow(() -> new RuntimeException("Role not found: " + roleName)))
+//         .collect(Collectors.toSet());
+
+//     user.setRoles(roles);
+//     return userRepository.save(user);
+// }
+
+// Create the user of super admin on role admin , admin on role user only
 public User createUserBySuperAdmin(Map<String, Object> requestBody) {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    // Get role(s) of the currently authenticated user
+    boolean isSuperAdmin = authentication.getAuthorities().stream()
+        .anyMatch(granted -> granted.getAuthority().equals("ROLE_SUPER_ADMIN"));
+
+    boolean isAdmin = authentication.getAuthorities().stream()
+        .anyMatch(granted -> granted.getAuthority().equals("ROLE_ADMIN"));
+
     String username = (String) requestBody.get("username");
     String password = (String) requestBody.get("password");
     String email = (String) requestBody.get("email");
@@ -103,6 +158,24 @@ public User createUserBySuperAdmin(Map<String, Object> requestBody) {
         throw new RuntimeException("Username already exists");
     }
 
+    // ✅ Role validation logic
+    List<String> roleNames = (List<String>) requestBody.get("roles");
+    if (roleNames == null || roleNames.isEmpty()) {
+        throw new RuntimeException("At least one role must be specified");
+    }
+
+    if (isAdmin) {
+        for (String role : roleNames) {
+            if (!role.equalsIgnoreCase("USER")) {
+                throw new RuntimeException("ADMIN can only assign role USER");
+            }
+        }
+    }
+
+    if (!isAdmin && !isSuperAdmin) {
+        throw new RuntimeException("You are not authorized to create users");
+    }
+
     User user = new User();
     user.setUsername(username);
     user.setEmail(email);
@@ -115,11 +188,6 @@ public User createUserBySuperAdmin(Map<String, Object> requestBody) {
     user.setProvince(province);
     user.setDistrict(district);
     user.setCommune(commune);
-
-    List<String> roleNames = (List<String>) requestBody.get("roles");
-    if (roleNames == null || roleNames.isEmpty()) {
-        throw new RuntimeException("At least one role must be specified");
-    }
 
     Set<Role> roles = roleNames.stream()
         .map(roleName -> roleRepository.findByName(roleName)
