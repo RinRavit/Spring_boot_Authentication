@@ -55,13 +55,13 @@ public class ContractorService {
             .orElseThrow(() -> new RuntimeException("Contractor not found"));
     
         existing.setdirectorName(updatedContractor.getdirectorName());
-        existing.setcontractor(updatedContractor.getcontractor());
+        existing.setcontractorName(updatedContractor.getcontractorName());
         existing.setcompanyName(updatedContractor.getcompanyName());
-        existing.setlocation(updatedContractor.getlocation());
-        existing.setphone(updatedContractor.getphone());
-        existing.settypeService(updatedContractor.gettypeService());
-        existing.settypeContract(updatedContractor.gettypeContract());
-        existing.settypeContractor(updatedContractor.gettypeContractor());
+        existing.setAddress(updatedContractor.getAddress());
+        existing.setPhoneNumber(updatedContractor.getPhoneNumber());
+        existing.setBusinesstype(updatedContractor.getBusinesstype());
+        existing.setNatureofproject(updatedContractor.getNatureofproject());
+        existing.setClassification(updatedContractor.getClassification());
     
         // If a new image is provided in base64
         if (updatedContractor.getimage() != null && updatedContractor.getimage().startsWith("data:image")) {

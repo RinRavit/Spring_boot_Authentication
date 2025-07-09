@@ -21,23 +21,24 @@ public class Contractor {
     @Column(name = "director_name")
     private String directorName;
 
-    private String contractor;
+    @Column(name = "contractor_name")
+    private String contractorName;
 
     @Column(name = "company_name")
     private String companyName;
 
-    private String location;
+    private String address;
 
-    private String phone;
+    private String phoneNumber;
 
-    @Column(name = "type_service")
-    private String typeService;
+    @Column(name = "business_type")
+    private String businesstype;
 
-    @Column(name = "type_contract")
-    private String typeContract;
+    @Column(name = "nature_of_project")
+    private String natureofproject;
 
-    @Column(name = "type_contractor")
-    private String typeContractor;
+    @Column(name = "classification")
+    private String classification;
 
     @Column(name = "created_at")
     private Instant createdAt = Instant.now();
@@ -66,11 +67,11 @@ public class Contractor {
     }
     
     // Contractor
-    public String getcontractor() {
-        return contractor;
+    public String getcontractorName() {
+        return contractorName;
     }
-    public void setcontractor(String contractor) {
-        this.contractor = contractor;
+    public void setcontractorName(String contractorName) {
+        this.contractorName = contractorName;
     }
 
     // Company Name
@@ -83,42 +84,43 @@ public class Contractor {
 
 
     // Phone
-    public String getphone() {
-        return phone;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
-    public void setphone(String phone) {
-        this.phone = phone;
-    }
-
-    // Location
-    public String getlocation() {
-        return location;
-    }
-    public void setlocation(String location) {
-        this.location = location;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
-    // TypeService
-    public String gettypeService() {
-        return typeService;
+    // Address
+    public String getAddress() {
+        return address;
     }
-    public void settypeService(String typeService) {
-        this.typeService = typeService;
-    }
-
-    // TypeContract
-    public String gettypeContract() {
-        return typeContract;
-    }
-    public void settypeContract(String typeContract) {
-        this.typeContract = typeContract;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    // TypeContractor
-    public String gettypeContractor() {
-        return typeContractor;
+    // Business type
+    public String getBusinesstype() {
+        return businesstype;
     }
-    public void settypeContractor(String typeContractor) {
-        this.typeContractor = typeContractor;
+    public void setBusinesstype(String businesstype) {
+        this.businesstype = businesstype;
+    }
+    
+
+    // Nature of Project
+    public String getNatureofproject() {
+        return natureofproject;
+    }
+    public void setNatureofproject(String natureofproject) {
+        this.natureofproject = natureofproject;
+    }
+
+    // Classification
+    public String getClassification() {
+        return classification;
+    }
+    public void setClassification(String classification) {
+        this.classification = classification;
     }
 }

@@ -110,6 +110,18 @@ public ResponseEntity<?> getAllUsersWithOnlyUserRole() {
             .body("Error fetching users: " + e.getMessage());
     }
 }
+@PreAuthorize("hasRole('SUPER_ADMIN')")
+@PostMapping("/create-user")
+public ResponseEntity<?> createUserBySuperAdmin(@RequestBody Map<String, Object> requestBody) {
+    try {
+        User createdUser = superAdminService.createUserBySuperAdmin(requestBody);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+    } catch (RuntimeException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+    }
+}
+
+
 
 
 }

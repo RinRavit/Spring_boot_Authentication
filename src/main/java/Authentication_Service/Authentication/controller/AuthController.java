@@ -52,24 +52,63 @@ public ResponseEntity<?> registerUser(@RequestBody User user) {
         return ResponseEntity.status(401).body("Invalid credentials"); // Return 401 if authentication fails
     }
 
+    // @GetMapping("/user-info")
+    // public ResponseEntity<?> getUserInfo(HttpServletRequest request) {
+    //     try {
+    //         String token = request.getHeader("Authorization").substring(7); // Remove "Bearer "
+    //         String username = jwtUtil.extractUsername(token);
+
+    //         User user = userRepository.findByUsername(username)
+    //                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+    //         Map<String, String> userInfo = Map.of(
+    //                 "username", user.getUsername(),
+    //                 "email", user.getEmail()
+    //         );
+
+    //         return ResponseEntity.ok(userInfo);
+    //     } catch (Exception e) {
+    //         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
+    //     }
+    // }
+
     @GetMapping("/user-info")
-    public ResponseEntity<?> getUserInfo(HttpServletRequest request) {
-        try {
-            String token = request.getHeader("Authorization").substring(7); // Remove "Bearer "
-            String username = jwtUtil.extractUsername(token);
-
-            User user = userRepository.findByUsername(username)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-
-            Map<String, String> userInfo = Map.of(
-                    "username", user.getUsername(),
-                    "email", user.getEmail()
-            );
-
-            return ResponseEntity.ok(userInfo);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
+public ResponseEntity<?> getUserInfo(HttpServletRequest request) {
+    try {
+        // ── 1. Read & validate the header ────────────────────────────────
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body("Missing or invalid Authorization header");
         }
+
+        // ── 2. Extract username from JWT ─────────────────────────────────
+        String token     = authHeader.substring(7);            // drop the "Bearer "
+        String username  = jwtUtil.extractUsername(token);
+
+        // ── 3. Load user & build response map ───────────────────────────
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Map<String, Object> userInfo = Map.of(
+                "username", user.getUsername(),
+                "email",    user.getEmail(),
+                "roles",    user.getRoles()                     // Set<Role>
+                               .stream()
+                               .map(role -> role.getName())     // List<String>
+                               .toList()
+        );
+
+        return ResponseEntity.ok(userInfo);
+
+    } catch (Exception e) {
+        // Token expired, malformed, or user not found
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body("Invalid or expired token");
     }
+}
+
     
 }
