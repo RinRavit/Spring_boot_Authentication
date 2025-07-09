@@ -50,6 +50,18 @@ public class Project {
 
     @Column(name = "created_at")
     private Instant createdAt = Instant.now();
+    
+    @ManyToOne
+@JoinColumn(name = "project_id")
+private Project project;
+
+public Project getProject() {
+    return project;
+}
+
+public void setProject(Project project) {
+    this.project = project;
+}
 
         // Id
         public Long getId() {

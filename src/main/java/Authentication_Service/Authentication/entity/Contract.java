@@ -1,5 +1,6 @@
 
 package Authentication_Service.Authentication.entity;
+import Authentication_Service.Authentication.entity.Project;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -17,7 +18,8 @@ public class Contract {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "no_contract")
+    // @Column(name = "no_contract")
+    @Column(name = "contract_no")
     private String contractNo;
 
     private String techincalAssistant;
@@ -45,6 +47,14 @@ public class Contract {
 
     private String completionDate;
 
+    @ManyToOne
+@JoinColumn(name = "project_id")
+private Project project;
+
+    // @ManyToOne(fetch = FetchType.EAGER)
+    // @JoinColumn(name = "project_no", referencedColumnName = "project_no")
+    // private Project project;
+
     // @Column(name = "name_project")
     // private String nameProject;
 
@@ -61,6 +71,14 @@ public class Contract {
 
     // @Column(name = "created_at")
     // private Instant createdAt = Instant.now();
+
+    public Project getProject() {
+        return project;
+    }
+    
+    public void setProject(Project project) {
+        this.project = project;
+    }
 
         // Id
         public Long getId() {

@@ -1,12 +1,17 @@
+
+
 package Authentication_Service.Authentication.controller;
 
 import Authentication_Service.Authentication.entity.Contract;
 import Authentication_Service.Authentication.service.ContractService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/contracts")
@@ -14,57 +19,52 @@ public class ContractController {
 
     @Autowired
     private ContractService contractService;
+      @Autowired
+    private ObjectMapper objectMapper; 
 
     @PostMapping("/create")
-    // ✅ Add security check here to restrict to admin
-    public ResponseEntity<?> createContract(@RequestBody Contract contract) {
+public ResponseEntity<?> createContract(@RequestBody Map<String, Object> requestBody) {
+    try {
+        String projectNo = requestBody.get("projectNo").toString();
+        // Convert map to Contract object manually or use a DTO + mapper
+        Contract contract = objectMapper.convertValue(requestBody, Contract.class);
+        return ResponseEntity.ok(contractService.createContract(contract, projectNo));
+    } catch (Exception e) {
+        return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+    }
+}
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Contract contract, @RequestParam String projectNo) {
         try {
-            Contract saved = contractService.createContract(contract);
-            return ResponseEntity.ok(saved);
+            return ResponseEntity.ok(contractService.updateContract(id, contract, projectNo));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/list")
     public ResponseEntity<List<Contract>> getAllContracts() {
         return ResponseEntity.ok(contractService.getAllContracts());
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateContract(
-        @PathVariable Long id,
-        @RequestBody Contract updatedContract
-    ) {
-        try {
-            Contract contract = contractService.updateContract(id, updatedContract);
-            return ResponseEntity.ok(contract);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    // List by Id
     @GetMapping("/{id}")
-    public ResponseEntity<?> getContractById(@PathVariable Long id) {
+    public ResponseEntity<?> getById(@PathVariable Long id) {
         try {
-            Contract contract = contractService.getContractById(id);
-            return ResponseEntity.ok(contract);
+            return ResponseEntity.ok(contractService.getContractById(id));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    // Delete 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteContract(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         try {
             contractService.deleteContract(id);
-            return ResponseEntity.ok("Contract " + id + " has been deleted successfully.");
+            return ResponseEntity.ok("Contract deleted successfully.");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
 }
